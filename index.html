@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>请使用代理访问</title>
+    <meta charset="UTF-8">
+    <script>
+        // 检测用户IP是否在被限制地区
+        fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+                const blockedCountries = ["CN", "IR", "RU"]; // 被限制的国家代码
+                const targetUrl = new URLSearchParams(window.location.search).get('url') || "https://google.com";
+                
+                if (blockedCountries.includes(data.country)) {
+                    const proxyLink = "https://你的代理官网.com"; // 🔴替换成你的代理链接
+                    const message = `⚠️ 您所在地区 (${data.country}) 无法访问！\n\n请使用代理后刷新页面。\n\n代理获取：${proxyLink}`;
+                    if (confirm(message)) {
+                        window.open(proxyLink, '_blank');
+                    } else {
+                        alert("请使用代理访问！");
+                    }
+                } else {
+                    window.location.href = targetUrl; // 正常跳转
+                }
+            })
+            .catch(error => {
+                console.error("IP检测失败，直接放行", error);
+                const targetUrl = new URLSearchParams(window.location.search).get('url') || "https://google.com";
+                window.location.href = targetUrl;
+            });
+    </script>
+</head>
+<body>
+    <p>检测网络中，请稍候...</p>
+</body>
+</html>
